@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+
 import 'package:flash/screens/registration_screen.dart';
 import 'package:flash/screens/login_screen.dart';
 import 'package:flash/components/roundedButton.dart';
@@ -41,7 +43,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>
           children: <Widget>[
             Row(
               // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
+              children: [
                 Hero(
                   tag: 'logo',
                   child: Container(
@@ -49,17 +51,22 @@ class _WelcomeScreenState extends State<WelcomeScreen>
                     height: animation.value * 50,
                   ),
                 ),
-                Text(
-                  'Flash Chat',
-                  style: TextStyle(
-                    fontSize: 45.0,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.black54,
-                  ),
+                AnimatedTextKit(
+                  animatedTexts: [
+                    TypewriterAnimatedText(
+                      'Flash Chat',
+                      speed: Duration(milliseconds: 200),
+                      textStyle: const TextStyle(
+                        fontSize: 45.0,
+                        fontWeight: FontWeight.w900,
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 48.0,
             ),
             EntryRoundedButton(
