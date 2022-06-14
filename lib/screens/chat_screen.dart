@@ -13,6 +13,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final _fireStore = FirebaseFirestore.instance;
   final _auth = FirebaseAuth.instance;
+  // var messageTextController = textcontroller();
   late String messageText;
 
   dynamic logginUser;
@@ -28,7 +29,6 @@ class _ChatScreenState extends State<ChatScreen> {
       // ignore: unnecessary_null_comparison
       if (user != null) {
         logginUser = user;
-        print(logginUser.email);
       }
     } catch (e) {
       print(e);
@@ -64,29 +64,19 @@ class _ChatScreenState extends State<ChatScreen> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 final messages = snapshot.data!.docs;
-                List<Text> messageWidgets = [];
+                List<Widget> messageBubbles = [];
                 for (var message in messages) {
-                  final messageWidget =
-                      Text('${message['sender']}${message['text']}');
+                  final messageBubble = MessageBubble(
+                      text: message['text'], sender: message['sender']);
 
-                  messageWidgets.add(messageWidget);
+                  messageBubbles.add(messageBubble);
                 }
                 return Expanded(
-                  child: ListView(children: messageWidgets),
+                  child: ListView(
+                      padding: EdgeInsets.symmetric(
+                          vertical: 20.0, horizontal: 10.0),
+                      children: messageBubbles),
                 );
-
-                //   return ListView(
-                //     children: snapshot.data!.docs.map(
-                //       (DocumentSnapshot document) {
-                //         Map<String, dynamic> data =
-                //             document.data()! as Map<String, dynamic>;
-                //         return ListTile(
-                //           title: Text(data['sender']),
-                //           subtitle: Text(data['text']),
-                //         );
-                //       },
-                //     ).toList(),
-                //   );
               },
             ),
             Container(
@@ -96,6 +86,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      // controller:
                       onChanged: (value) {
                         messageText = value;
                       },
@@ -121,6 +112,56 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MessageBubble extends StatelessWidget {
+  MessageBubble({required this.text, required this.sender});
+
+  // ignore: prefer_typing_uninitialized_variables
+  final text;
+  // ignore: prefer_typing_uninitialized_variables
+  final sender;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Text(
+            sender,
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 10,
+            ),
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Material(
+            borderRadius: BorderRadius.circular(12.0),
+            elevation: 3,
+            color: Colors.lightBlue,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              child: Text(
+                text,
+                style: TextStyle(fontSize: 20, color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Text(
+            'time',
+            style: TextStyle(fontSize: 10),
+          ),
+        ],
       ),
     );
   }
